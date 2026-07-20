@@ -428,7 +428,56 @@ Este projeto está licenciado sob a [MIT License](LICENSE).
 ## 👥 Contribuição
 
 1. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
-2. Commit suas mudanças (`git commit -m 'Add nova feature'`)
+2. Commit suas mudanças seguindo o padrão **Conventional Commits** (veja abaixo)
 3. Push para a branch (`git push origin feature/nova-feature`)
 4. Abra um Pull Request
 
+### 📐 Padrão de Commits — Conventional Commits
+
+Este projeto adota o padrão [Conventional Commits](https://www.conventionalcommits.org/pt-br/) para todas as mensagens de commit. Isso garante um histórico legível e permite a geração automática de changelogs.
+
+#### Formato
+
+```
+<tipo>(escopo opcional): <descrição curta>
+
+[corpo opcional]
+
+[rodapé(s) opcional(is)]
+```
+
+#### Tipos Permitidos
+
+| Tipo | Quando usar |
+|------|-------------|
+| `feat` | Nova funcionalidade |
+| `fix` | Correção de bug |
+| `docs` | Alterações apenas na documentação |
+| `style` | Formatação, ponto-e-vírgula, espaços — sem mudança de lógica |
+| `refactor` | Refatoração de código sem adição de feature ou correção de bug |
+| `test` | Adição ou correção de testes |
+| `chore` | Atualizações de build, dependências ou configurações |
+| `perf` | Melhoria de performance |
+| `ci` | Alterações em arquivos de CI/CD |
+| `revert` | Reversão de um commit anterior |
+
+#### Exemplos
+
+```bash
+# Nova funcionalidade
+git commit -m "feat(logs): add filter by traceId on GET /api/logs"
+
+# Correção de bug
+git commit -m "fix(auth): return 401 when API key header is empty"
+
+# Documentação
+git commit -m "docs: add Conventional Commits standard to contribution guide"
+
+# Refatoração
+git commit -m "refactor(service): extract log validation to separate method"
+
+# Breaking change (indicada com '!' ou no rodapé)
+git commit -m "feat(api)!: change log level field to uppercase only"
+```
+
+> 💡 **Dica:** Mensagens em **inglês** são preferidas para manter consistência com o ecossistema de ferramentas e facilitar a colaboração.
