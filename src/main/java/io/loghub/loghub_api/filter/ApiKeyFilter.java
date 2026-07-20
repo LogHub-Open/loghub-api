@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 
 @Component
 public class ApiKeyFilter extends OncePerRequestFilter {
@@ -34,7 +36,7 @@ public class ApiKeyFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (!validApiKey.equals(requestApiKey)) {
+        if (!isValidApiKey(requestApiKey)) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
             response.getWriter().write("{\"error\": \"Invalid API Key\", \"message\": \"The provided API Key is not valid\"}");
@@ -42,6 +44,16 @@ public class ApiKeyFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    /**
+     * Constant-time comparison to avoid leaking the API key via response-time timing attacks.
+     */
+    private boolean isValidApiKey(String requestApiKey) {
+        return MessageDigest.isEqual(
+                validApiKey.getBytes(StandardCharsets.UTF_8),
+                requestApiKey.getBytes(StandardCharsets.UTF_8)
+        );
     }
 
     @Override
