@@ -1,5 +1,6 @@
 package io.loghub.loghub_api.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -12,17 +13,16 @@ import java.util.List;
 @Configuration
 public class CorsConfig {
 
+    // Defaults cover local dev (Vite + CRA); override via loghub.cors.allowed-origins
+    // (env var LOGHUB_CORS_ALLOWED_ORIGINS) with the real frontend origin in production.
+    @Value("${loghub.cors.allowed-origins:http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173,http://127.0.0.1:3000}")
+    private String allowedOrigins;
+
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // Permitir origens do frontend (desenvolvimento e produção)
-        config.setAllowedOrigins(Arrays.asList(
-            "http://localhost:5173",  // Vite dev server
-            "http://localhost:3000",  // Create React App
-            "http://127.0.0.1:5173",
-            "http://127.0.0.1:3000"
-        ));
+        config.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
 
         // Permitir todos os métodos HTTP
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
