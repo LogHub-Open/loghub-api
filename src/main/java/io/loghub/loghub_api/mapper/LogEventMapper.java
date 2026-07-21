@@ -7,12 +7,16 @@ import io.loghub.loghub_api.dto.LogEvent;
 import io.loghub.loghub_api.dto.LogEventResponse;
 import io.loghub.loghub_api.dto.SdkInfo;
 import io.loghub.loghub_api.entity.LogEventEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
 @Component
 public class LogEventMapper {
+
+    private static final Logger log = LoggerFactory.getLogger(LogEventMapper.class);
 
     private final ObjectMapper objectMapper;
 
@@ -33,6 +37,8 @@ public class LogEventMapper {
             try {
                 entity.setMetadata(objectMapper.writeValueAsString(dto.metadata()));
             } catch (JsonProcessingException e) {
+                log.warn("Failed to serialize metadata for log event (application={}), dropping it",
+                        dto.application(), e);
                 entity.setMetadata(null);
             }
         }
@@ -51,6 +57,8 @@ public class LogEventMapper {
             try {
                 metadata = objectMapper.readValue(entity.getMetadata(), new TypeReference<>() {});
             } catch (JsonProcessingException e) {
+                log.warn("Failed to deserialize metadata for log event (id={}), dropping it",
+                        entity.getId(), e);
                 metadata = null;
             }
         }
